@@ -1,2 +1,3 @@
 # mechine-learning
-demom
+
+Demo on mechine learning.
