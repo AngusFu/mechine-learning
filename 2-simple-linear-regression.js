@@ -34,24 +34,20 @@ const training = () => {
   }
 
   loss = loss / (len * 2)
-  return [θ0, θ1, loss]
+  return loss
 }
 
-let iter = 0
+const iter = 1e5
+let index = 0
 
-while (true) {
-  iter++
-  const [θ0, θ1, loss] = training()
-
-  if (Math.abs(lastLoss - loss) < 0.000005) {
-    console.log({
-      h:  `y = ${θ1} * x + ${θ0}`,
-      expect: `y = ${k} * x + ${b}`,
-      loss,
-      iter
-    })
-    break
-  }
-
-  lastLoss = loss
+while (index < iter) {
+  lastLoss = training()
+  index++
 }
+
+console.log({
+  h:  `y = ${θ1} * x + ${θ0}`,
+  expect: `y = ${k} * x + ${b}`,
+  loss: lastLoss,
+  iter
+})
