@@ -6,7 +6,7 @@ const traingSet = Array.from({ length: 1000 }, _ => {
     y: x > 5.5 ? 1 : 0 + Math.random() * (Math.random() > 0.5 ? 1 : -1)
   }
 })
-console.log(traingSet)
+
 const size = traingSet.length
 const alpha = 0.01
 let w0 = Math.random()
