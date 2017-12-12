@@ -45,5 +45,5 @@ loss = loss / (testingSet.length * 2)
 
 console.log('k:', k)
 console.log('b:', b)
-console.log('hypothesis:', `y = ${k} * x + ${b}`)
+console.log('hypothesis:', `y = ${theta_1} * x + ${theta_0}`)
 console.log('loss:', loss)
