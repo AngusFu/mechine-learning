@@ -1,64 +1,49 @@
-const k = Math.random() * 10 | 0
-const b = Math.random() * 10 | 0
-const len = 500
+const k = Math.random() * 100
+const b = Math.random() * 100
 
-const trainingSet = Array.from({ length: len }, _ => {
-  const noise = Math.random() * (Math.random() > 0.5 ? -1 : 1)
+const dataSet = Array.from({ length: 1000 }, _ => {
+  const noise = Math.random() * 30
   const x = Math.random() * 10
-  const y = k * x + b + noise
-
+  const y = k * x + b + noise * (Math.random() > 0.3 ? -1 : 1)
   return [x, y]
 })
 
-// learning rate
-const alpha = 0.01
+const trainingSet = dataSet.slice(0, dataSet.length * 0.7)
+const testingSet = dataSet.slice(dataSet.length * 0.7)
 
-// y'(i) = θ0 + θ1 * x(i)
-let θ0 = Math.random() + 20
-let θ1 = Math.random() + 20
-
-let lastLoss = 0
+const learningRate = 0.01
+let iteration = 10000
+let theta_0 = Math.random()
+let theta_1 = Math.random()
 
 const training = () => {
+  let d_theta_0 = 0
+  let d_theta_1 = 0
 
-  // dJ(θ0, θ1) / dθ0 = (1/m) * [Sum(y'(i) - y_i)]
-  let d_θ0 = 0
-
-  // dJ(θ0, θ1) / dθ1 = (1/m) * Sum[(y'(i) - y_i) * x_i]
-  let d_θ1 = 0
-
-  for (let [x_i, y_i] of trainingSet) {
-    const diff =  θ0 + θ1 * x_i - y_i
-    d_θ0 += diff * 1
-    d_θ1 += diff * x_i
+  for (let [x, y] of trainingSet) {
+    const h = theta_0 + theta_1 * x
+    const bias =  h - y
+    d_theta_0 += bias * 1
+    d_theta_1 += bias * x
   }
 
-  // θ0 := θ0 - alpha * (dJ / dθ0)
-  θ0 -= alpha * d_θ0 / len
-  // θ1 := θ1 - alpha * (dJ / dθ1)
-  θ1 -= alpha * d_θ1 / len
-
-  let loss = 0
-
-  for (let [x_i, y_i] of trainingSet) {
-    loss +=  Math.pow(θ0 + θ1 * x_i - y_i, 2)
-  }
-
-  loss = loss / (len * 2)
-  return loss
+  theta_0 -= learningRate * d_theta_0 / trainingSet.length
+  theta_1 -= learningRate * d_theta_1 / trainingSet.length
 }
 
-const iter = 1e5
-let index = 0
-
-while (index < iter) {
-  lastLoss = training()
-  index++
+// training
+while (iteration--) {
+  training()
 }
 
-console.log({
-  h:  `y = ${θ1} * x + ${θ0}`,
-  expect: `y = ${k} * x + ${b}`,
-  loss: lastLoss,
-  iter
-})
+// test
+let loss = 0
+for (let [x, y] of testingSet) {
+  loss += Math.pow(theta_0 + theta_1 * x - y, 2)
+}
+loss = loss / (testingSet.length * 2)
+
+console.log('k:', k)
+console.log('b:', b)
+console.log('hypothesis:', `y = ${k} * x + ${b}`)
+console.log('loss:', loss)
