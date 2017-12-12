@@ -1,53 +1,48 @@
-const k = Math.random() * 10 | 0
-const b = Math.random() * 10 | 0
-const len = 500
+const k = Math.random() * 100
+const b = Math.random() * 100
 
-const trainingSet = Array.from({ length: len }, _ => {
-  const noise = Math.random() * (Math.random() > 0.5 ? -1 : 1)
+const dataSet = Array.from({ length: 1000 }, _ => {
+  const noise = Math.random() * 30
   const x = Math.random() * 10
-  const y = k * x + b + noise
-
+  const y = k * x + b + noise * (Math.random() > 0.3 ? -1 : 1)
   return [x, y]
 })
 
-// learning rate
-const alpha = 0.01
+const trainingSet = dataSet.slice(0, dataSet.length * 0.7)
+const testingSet = dataSet.slice(dataSet.length * 0.7)
 
-// y'(i) = θ0 + θ1 * x(i)
-let θ0 = Math.random() + 20
-let θ1 = Math.random() + 20
+const learningRate = 0.01
+let iteration = 10000
+let theta_0 = Math.random()
+let theta_1 = Math.random()
 
-let lastLoss = 0
-
-// 随机梯度下降法SGD
+// 随机梯度下降法 SGD
 const training = () => {
-  const [x_i, y_i] = trainingSet[Math.random() * len | 0]
-  const diff =  (θ0 + θ1 * x_i) - y_i
+  let d_theta_0 = 0
+  let d_theta_1 = 0
 
-  θ0 -= alpha * diff * 1
-  θ1 -= alpha * diff * x_i
-
-  let loss = 0
-
-  for (let [x_i, y_i] of trainingSet) {
-    loss +=  Math.pow(θ0 + θ1 * x_i - y_i, 2)
-  }
-
-  loss = loss / (len * 2)
-  return loss
+  const len = trainingSet.length
+  const [x, y] = trainingSet[Math.random() * len | 0]
+  const h = theta_0 + theta_1 * x
+  const bias = h - y
+  theta_0 -= learningRate * bias * 1
+  theta_1 -= learningRate * bias * x
 }
 
-const iter = 1e5
-let index = 0
-
-while (index < iter) {
-  lastLoss = training()
-  index++
+// training
+while (iteration--) {
+  training()
 }
 
-console.log({
-  h:  `y = ${θ1} * x + ${θ0}`,
-  expect: `y = ${k} * x + ${b}`,
-  loss: lastLoss,
-  iter
-})
+// test
+let loss = 0
+for (let [x, y] of testingSet) {
+  loss += Math.pow(theta_0 + theta_1 * x - y, 2)
+}
+loss = loss / (testingSet.length * 2)
+
+console.log('k:', k)
+console.log('b:', b)
+console.log('hypothesis:', `y = ${k} * x + ${b}`)
+console.log('loss:', loss)
+
