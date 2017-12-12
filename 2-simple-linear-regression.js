@@ -18,9 +18,6 @@ let theta_1 = Math.random()
 
 // 随机梯度下降法 SGD
 const training = () => {
-  let d_theta_0 = 0
-  let d_theta_1 = 0
-
   const len = trainingSet.length
   const [x, y] = trainingSet[Math.random() * len | 0]
   const h = theta_0 + theta_1 * x
@@ -45,4 +42,3 @@ console.log('k:', k)
 console.log('b:', b)
 console.log('hypothesis:', `y = ${k} * x + ${b}`)
 console.log('loss:', loss)
-
